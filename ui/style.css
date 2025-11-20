@@ -1,0 +1,312 @@
+
+@font-face {
+    font-family: ganh;
+    src:url(ganhregular.woff2) format('woff2'),
+        url(ganhregular.woff) format('woff'),
+        url(ganhregular.otf) format('opentype');
+    font-style: normal;
+    src:url(ganhregularitalic.woff2) format('woff2'),
+        url(ganhregularitalic.woff) format('woff'),
+        url(ganhregularitalic.otf) format('opentype');
+    font-style: italic;
+}
+
+@font-face {
+    font-family: ganh-thin;
+    src:url(ganhthin.woff2) format('woff2'),
+        url(ganhthin.woff) format('woff'),
+        url(ganhthin.otf) format('opentype');
+    font-style: normal;
+    src:url(ganhthinitalic.woff2) format('woff2'),
+        url(ganhthinitalic.woff) format('woff'),
+        url(ganhthinitalic.otf) format('opentype');
+    font-style: italic;
+}
+
+:root {
+    --bg-dark: oklch(0.1 0 224);
+    --bg: oklch(0.15 0 224);
+    --bg-light: oklch(0.2 0 224);
+    --text: oklch(0.96 0 224);
+    --text-muted: oklch(0.76 0 224);
+    --highlight: oklch(0.5 0 224);
+    --border: oklch(0.4 0 224);
+    --border-muted: oklch(0.3 0 224);
+    --primary: oklch(0.76 0.1 224);
+    --secondary: oklch(0.76 0.1 44);
+    --danger: oklch(0.7 0.05 30);
+    --warning: oklch(0.7 0.05 100);
+    --success: oklch(0.7 0.05 160);
+    --info: oklch(0.7 0.05 260);
+    --border-column: solid 0.2vh var(--border); 
+    --transition: all 0.3s ease;
+}
+
+body {
+    background-color: var(--bg-dark);
+    font-family: ganh;
+    color: var(--text);
+}
+
+input {
+    font-family: ganh;
+}
+
+input:focus {
+    outline: none;
+}
+
+p,h1 {
+    user-select: none
+}
+
+
+.nav{
+    display: flex;
+    margin-left: 5vw;
+    background-color: var(--bg-dark);
+    height: 14vh;
+    width: 90vw;
+    margin-top: 2vh;
+    margin-bottom: 2vh;
+}
+.link {
+    margin-left: 5vw;
+    background-color: var(--bg);
+    height: 9vh;
+    width: 90vw;
+    border-radius: 9vh;
+    border-color: var(--border);
+    border-width: 0.2vh;
+    border-style: solid;
+    border-top-color: var(--highlight);
+    color: var(--text);
+    padding-left: 4vh;
+    font-size: large;
+    transition: var(--transition);
+}
+
+.link:hover {
+    border-color: var(--primary);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.link:focus {
+    border-color: var(--primary);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.directory {
+    background-color: var(--bg);
+    width: 100%;
+    border: none;
+    color: var(--text-muted);
+    box-shadow: none;
+    margin-bottom: 1em;
+}
+.directoryOption{
+    display: flex;
+    justify-content: space-around;
+}
+
+.btn {
+    font-family: ganh;
+    background-color: var(--bg-light);
+    border: var(--border-column);
+    border-radius: 4vh;
+    width: 13vw;
+    height: 5vh;
+    color: var(--text);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: var(--transition);
+}
+
+.btn:hover {
+    background-color: var(--primary);
+    color: var(--bg-dark);
+    border-color: var(--primary);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn i {
+    margin-right: 0.5vw;
+}
+.backplate {
+    margin-top: 2vh;
+    display: flex;
+    margin-left: 5vw;
+    width: 90vw;
+    height: 68vh;
+    margin-bottom: 1vh;
+}
+.leftColumn {
+    background-color: var(--bg);
+    width: 30vw;
+    margin-right: 1vw;
+    border: var(--border-column);
+    border-radius: 4vh;
+    border-top-color: var(--highlight);
+    padding-left: 2vw;
+    padding-right: 2vw;
+}
+.downloadModeTitle {
+    font-weight: bold;
+    letter-spacing: 0.15vw;
+    font-style: normal;
+    font-family: "Montserrat";
+    color: var(--text-muted);
+    margin-bottom: 0;
+}
+.downloadModeDescription {
+    font-size: small;
+    color: var(--text-muted);
+    margin-top: 1vh;
+}
+.cards {
+    display: flex;
+    gap: 2vh;
+    margin-top: 2vh;
+    justify-content: space-around;
+}
+.radio-card {
+    position: relative;
+    width: 10vw;
+    cursor: pointer;
+    border: var(--border-column);
+    padding-left: 1.25vw;
+    padding-top: 1.5vh;
+    border-radius: 10%;
+    transition: var(--transition);
+}
+
+.radio-card svg {
+    fill: var(--border-muted);
+    transition: var(--transition);
+}
+
+.radio-card:has(input:checked) {
+    border-color: var(--primary);
+    transition: var(--transition);
+    background-color: var(--bg-light);
+}
+
+.radio-card:has(input:checked) svg {
+    fill: var(--text);
+    transition: var(--transition);
+}
+
+.radio-card:hover {
+    border-color: var(--highlight);
+    transition: var(--transition);
+}
+
+.radio-card:hover svg{
+    fill: var(--highlight);
+    transition: var(--transition);
+}
+
+.radio-card:hover .radiomark {
+    border-color: var(--highlight);
+    transition: var(--transition);
+}
+
+.radio-card input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+.radiomark {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    transform: translate(-150%, 50%);
+    height: 1.5vw;
+    width: 1.5vw;
+    background-color: var(--bg-light);
+    border-color: var(--border);
+    border: var(--border-column);
+    border-radius: 50%;
+    transition: var(--transition);
+}
+
+
+
+
+
+.radio-card input:checked ~ .radiomark {
+    border-color: var(--text);
+    transition: var(--transition);
+}
+
+.radiomark:after {
+    content: "";
+    position: absolute;
+    width: 0.8vw;
+    height: 0.8vw;
+    background-color: var(--text);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    clip-path: circle(0% at 50% 50%);
+    transition: var(--transition);
+}
+
+.radio-card input:checked ~ .radiomark:after {
+    display: block;
+    transition: var(--transition);
+    clip-path: circle(100% at 50% 50%)
+}
+
+.downloadBtn {font-family: ganh;
+    background-color: var(--bg-light);
+    border: var(--border-column);
+    border-radius: 4vh;
+    width: 13vw;
+    height: 5vh;
+    color: var(--text);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: var(--transition);
+}
+
+
+
+
+
+
+.rightColumn {
+    background-color: var(--bg);
+    width: 59vw;
+    border: var(--border-column);
+    border-radius: 4vh;
+    border-top-color: var(--highlight);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+.title {
+    color: var(--text);
+}
+.rightComment {
+    color: var(--text-muted);
+    font-family: ganh-thin;
+    font-style: italic;
+}
+#ytFrame{
+    border: var(--border-column);
+}
+
+.process {
+    margin-top: 2vh;
+    justify-content: space-between;
+    align-items: center;
+}
+

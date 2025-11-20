@@ -1,0 +1,70 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,826;1,826&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+    <title>TestUI</title>
+    <link rel="icon" href="favicon.ico">
+</head>
+<body>
+    
+    <div class="nav">
+        <img src="bannercpp.png" height=100%>
+    </div>
+    <form onsubmit="return false;">
+        <input type="text" id="ytLink" class="link" placeholder="Nhập liên kết Video tại đây..."></input>
+        <div class="backplate">
+            <div class="leftColumn">
+                <h1>Cấu hình tải xuống</h1>
+                <div class="directory">
+                    <p class="title">Đường dẫn tải xuống hiện tại:</p>
+                    <input type="text" id="directory" class="directory" readonly value="C:\YTDownloader">
+                    <div class="directoryOption">
+                        <button class="btn"><i class="bi bi-folder2-open"></i><p>Mở thư mục lưu</p></button>
+                        <button class="btn"><i class="bi bi-folder-symlink"></i><p>Chọn nơi lưu khác</p></button>
+                    </div>
+                </div>
+                <div class="downloadMode">
+                    <p class="title">Chế độ tải xuống:</p>
+                    <div class="cards">
+                        <label class="radio-card">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="5vw" height="5vw" class="bi bi-play-btn" viewBox="0 0 16 16"><path d="M6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814z"/><path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm15 0a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1z"/></svg>
+                            <input type="radio" id="small" name="font_size" value="small">
+                            <span class="radiomark"></span>
+                            
+                            <p class="downloadModeTitle">VIDEO</p>
+                            <p class="downloadModeDescription">Tải xuống Video (.mp4)</p>
+                        </label>
+                        <label class="radio-card">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="5vw" height="5vw" class="bi bi-file-music" viewBox="0 0 16 16"><path d="M10.304 3.13a1 1 0 0 1 1.196.98v1.8l-2.5.5v5.09c0 .495-.301.883-.662 1.123C7.974 12.866 7.499 13 7 13s-.974-.134-1.338-.377C5.302 12.383 5 11.995 5 11.5s.301-.883.662-1.123C6.026 10.134 6.501 10 7 10c.356 0 .7.068 1 .196V4.41a1 1 0 0 1 .804-.98z"/><path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1"/></svg>
+                            <input type="radio" id="small" name="font_size" value="small">
+                            <span class="radiomark"></span>
+                            
+                            <p class="downloadModeTitle">AUDIO</p>
+                            <p class="downloadModeDescription">Tải xuống Audio (.mp3)</p>
+                        </label>
+                    </div>
+                </div>
+                <div class="process">
+                    <div class="progressBar">
+                        <div class="progress" id="progress">
+                        </div>
+                    </div>
+                    <button class="downloadBtn" id="downloadBtn"><i class="bi bi-download"></i><p>Tải xuống</p></button>
+                </div>
+            </div>
+            <div class="rightColumn">
+                <p class="title">Xem trước Video</p>
+                <iframe id="ytFrame" width="100%" height="80%" src="https://www.youtube.com/embed/nzcM5fahhUc?list=RDnzcM5fahhUc" title="Mirror Replica" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <p class="rightComment">Tính năng chỉ hỗ trợ Video Youtube</p>
+            </div>
+        </div>
+    </form>
+    <script src="script.js"></script>
+</body>
+</html>
