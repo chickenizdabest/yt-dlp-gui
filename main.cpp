@@ -40,6 +40,8 @@ void title() {
 // Global webview pointer để có thể gọi từ thread khác
 webview::webview* g_webview = nullptr;
 std::mutex g_mutex;
+std::string g_completionCallback = "";
+std::mutex g_callbackMutex;
 
 // Global process handle để có thể terminate
 HANDLE g_currentProcess = NULL;
@@ -112,6 +114,8 @@ void processMessageQueue() {
                 g_webview->eval("document.getElementById('stopBtn').disabled = false;");
             } else if (msg.text == "__DISABLE_STOP__") {
                 g_webview->eval("document.getElementById('stopBtn').disabled = true;");
+            } else if (msg.type == "callback") {  // **THÊM PHẦN NÀY**
+                g_webview->eval(msg.text);  // Thực thi callback JS
             } else {
                 std::string escaped = escapeJson(msg.text);
                 std::string js = "appendConsole(\"" + escaped + "\", \"" + msg.type + "\");";
@@ -122,7 +126,7 @@ void processMessageQueue() {
 }
 
 // Hàm thực thi lệnh Windows và capture output
-void executeCommand(const std::string& command) {
+void executeCommand(const std::string& command, const std::string& callbackId = "") {
     appendToConsole("=== Starting command execution ===", "info");
     appendToConsole("Command: " + command, "info");
 
@@ -230,6 +234,15 @@ void executeCommand(const std::string& command) {
     ss << "Process exited with code: " + std::to_string(exitCode);
     appendToConsole(ss.str(), "info");
     appendToConsole("=== Command execution finished ===", "info");
+
+    if (!callbackId.empty() && g_webview) {
+        std::string jsCallback = "window.__commandComplete('" + callbackId + "', " +
+                                std::to_string(exitCode) + ");";
+
+        std::lock_guard<std::mutex> lock(g_queueMutex);
+        g_messageQueue.push_back({jsCallback, "callback"});
+    }
+
 }
 
 // Hàm terminate process đang chạy
@@ -319,32 +332,38 @@ int main() {
 
     // Bind callback từ JavaScript
     w.bind("runCommand", [](std::string jsonArgs) -> std::string {
-        // Parse JSON array - webview gửi arguments dưới dạng ["command"]
-        std::string command;
+    std::string command;
+    std::string callbackId;
 
-        // Simple JSON parsing để lấy string trong array
-        size_t start = jsonArgs.find("\"");
-        if (start != std::string::npos) {
-            size_t end = jsonArgs.find("\"", start + 1);
-            if (end != std::string::npos) {
-                command = jsonArgs.substr(start + 1, end - start - 1);
+    // Parse JSON để lấy command và callbackId
+    size_t start = jsonArgs.find("\"");
+    if (start != std::string::npos) {
+        size_t end = jsonArgs.find("\"", start + 1);
+        if (end != std::string::npos) {
+            command = jsonArgs.substr(start + 1, end - start - 1);
+
+            // Tìm callbackId (tham số thứ 2)
+            start = jsonArgs.find("\"", end + 1);
+            if (start != std::string::npos) {
+                end = jsonArgs.find("\"", start + 1);
+                if (end != std::string::npos) {
+                    callbackId = jsonArgs.substr(start + 1, end - start - 1);
+                }
             }
         }
+    }
 
-        if (command.empty()) {
-            appendToConsole("Error: Cannot parse command from: " + jsonArgs, "error");
-            return "{\"status\":\"error\",\"message\":\"Invalid command\"}";
-        }
+    if (command.empty()) {
+        appendToConsole("Error: Cannot parse command", "error");
+        return "{\"status\":\"error\"}";
+    }
 
-        appendToConsole("Parsed command: " + command, "info");
+    std::thread([command, callbackId]() {
+        executeCommand(command, callbackId);
+    }).detach();
 
-        // Chạy trong thread riêng để không block UI
-        std::thread([command]() {
-            executeCommand(command);
-        }).detach();
-
-        return "{\"status\":\"ok\"}";
-    });
+    return "{\"status\":\"ok\"}";
+});
 
     w.bind("stopCurrentProcess", [](std::string) -> std::string {
         stopCurrentProcess();

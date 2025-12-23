@@ -39,6 +39,8 @@
     --success: oklch(0.7 0.05 160);
     --info: oklch(0.7 0.05 260);
     --border-column: solid 0.2vh var(--border); 
+    --link-platform: oklch(0.76 0.1 224);
+    --link-platform-muted: oklch(0.4 0 224);
     --transition: all 0.3s ease;
     --execute: oklch(0.5765 0.1301 160);
     --stop: oklch(0.6513 0.2168 30);
@@ -74,15 +76,13 @@ p,h1 {
     margin-bottom: 2vh;
 }
 .link {
-    margin-left: 5vw;
     background-color: var(--bg);
     height: 9vh;
     width: 90vw;
     border-radius: 9vh;
-    border-color: var(--border);
+    border-color: var(--link-platform-muted);
     border-width: 0.2vh;
     border-style: solid;
-    border-top-color: var(--highlight);
     color: var(--text);
     padding-left: 4vh;
     font-size: large;
@@ -90,14 +90,70 @@ p,h1 {
 }
 
 .link:hover {
-    border-color: var(--primary);
+    border-color: var(--link-platform);
     cursor: pointer;
     transition: var(--transition);
 }
 
+.link:focus + .platformIcon {
+    background-color: var(--link-platform);
+    transition: var(--transition);
+}
+
+
 .link:focus {
-    border-color: var(--primary);
+    border-color: var(--link-platform);
     cursor: pointer;
+    transition: var(--transition);
+}
+
+.link-wrapper {
+    margin-left: 5vw;
+    width: 90vw;
+    height: 9vh;
+    position: relative;
+}
+
+.gradientBorder {
+    position: absolute;
+    inset: 0;              /* phủ toàn bộ */
+    border-radius: 9vh;   /* bo cong góc */
+    padding: 0.1vh;          /* độ dày border */
+    background: linear-gradient(170deg,rgba(37, 244, 238, 1) 0%, rgba(17, 114, 111, 1) 50%, rgba(0, 0, 0, 1) 60%, rgba(131, 23, 44, 1) 70%, rgba(254, 44, 85, 1) 100%);
+    
+    /* thủ thuật mask để chỉ giữ lại viền */
+    -webkit-mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;  /* không ảnh hưởng đến click */
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.platformIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    height: 9vh;
+    width: 9vh;
+    border-top-right-radius: 9vh;
+    border-bottom-right-radius: 9vh;
+    right: 0;
+    top: 0;
+    background-color: var(--link-platform-muted);
+    transition: var(--transition);
+    clip-path: inset(0 0 0 100%);
+}
+
+.platformIcon svg {
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: translate(-2.5vh, 2.5vh);
+    opacity: 0;
     transition: var(--transition);
 }
 
@@ -266,18 +322,54 @@ p,h1 {
     clip-path: circle(100% at 50% 50%)
 }
 
-.downloadBtn {font-family: ganh;
-    background-color: var(--bg-light);
+.downloadBtn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg-dark);
     border: var(--border-column);
     border-radius: 4vh;
     width: 13vw;
     height: 5vh;
+    transition: var(--transition);
+    position: relative;
+    font-family: ganh;
     color: var(--text);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    background-color: var(--bg-dark);
+    transition: var(--transition);
+    font-size: 0.9vw;
+    overflow: hidden;
+}
+
+.downloadBtn:not(:disabled):hover {
+    border-color: var(--primary);
     transition: var(--transition);
 }
+
+.downloadBtn::after {
+  content: "";
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 0; height: 0;
+  background: rgba(255,255,255,0.5);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+}
+
+.downloadBtn:focus::after {
+  animation: ripple 0.6s ease-out forwards;
+}
+
+@keyframes ripple {
+  0%   { width: 0; height: 0; opacity: 0.7; }
+  100% { width: 200px; height: 200px; opacity: 0; }
+}
+
+.downloadBtn:disabled {
+  cursor: not-allowed;
+}
+
 
 
 
@@ -353,6 +445,7 @@ p,h1 {
             border: var(--border-column);
             border-left-width: 0;
             border-right-width: 0;
+            padding-top: 1vh;
             padding-left: 2vw;
 }
 #console::-webkit-scrollbar {
@@ -411,6 +504,15 @@ p,h1 {
     border-radius: 1vh;
     color: var(--text);
     padding-left: 1vw;
+    transition: var(--transition);
+}
+.in-out input:hover {
+    border-color: var(--border);
+    transition: var(--transition);
+}
+.in-out input:focus {
+    border-color: var(--primary);
+    transition: var(--transition);
 }
 .button-group {
     display: flex;
@@ -466,3 +568,65 @@ p,h1 {
     border-color: var(--warning);
     transition: var(--transition);
 }
+
+.downloadBtn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #1a1a1a;
+            border: 2px solid #666;
+            border-radius: 40px;
+            width: 200px;
+            height: 60px;
+            position: relative;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+.downloadBtn .btn-text {
+            transition: var(--transition);
+        }
+        .downloadBtn:hover {
+            border-color: #4a9eff;
+            transition: var(--transition);
+        }
+
+        .downloadBtn.loading {
+            width: 60px;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .downloadBtn .spinner {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            transition: var(--transition);
+        }
+
+        .downloadBtn.loading .spinner {
+            opacity: 1;
+            width: 50px;
+            height: 50px;
+            transition: var(--transition);
+        }
+
+        .downloadBtn.loading .btn-text {
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .downloadBtn svg polygon {
+            stroke: #fafafa;
+            fill: transparent;
+            stroke-width: 2;
+        }
+
+        .downloadBtn svg polyline {
+            stroke: #fafafa;
+            stroke-width: 3;
+            fill: none;
+        }
