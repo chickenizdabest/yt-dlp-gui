@@ -7,8 +7,14 @@
 #include <fstream>
 #include <sstream>
 #include <thread>
+#include <shlobj.h>
+#include <vector>
+#include <algorithm>
 #include "httplib.h"
 #include "resource.h"
+
+#pragma comment(lib, "shell32.lib")
+#pragma comment(lib, "ole32.lib")
 
 // Title Console
 void title() {
@@ -56,6 +62,57 @@ struct ConsoleMessage {
 std::vector<ConsoleMessage> g_messageQueue;
 std::mutex g_queueMutex;
 
+// Base64 encoding table
+static const std::string base64_chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    "abcdefghijklmnopqrstuvwxyz"
+    "0123456789+/";
+
+// Hàm encode Base64
+std::string base64_encode(const std::string& input) {
+    std::string ret;
+    int i = 0;
+    int j = 0;
+    unsigned char char_array_3[3];
+    unsigned char char_array_4[4];
+    size_t in_len = input.size();
+    const unsigned char* bytes_to_encode = reinterpret_cast<const unsigned char*>(input.c_str());
+
+    while (in_len--) {
+        char_array_3[i++] = *(bytes_to_encode++);
+        if (i == 3) {
+            char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+            char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+            char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+            char_array_4[3] = char_array_3[2] & 0x3f;
+
+            for (i = 0; i < 4; i++)
+                ret += base64_chars[char_array_4[i]];
+            i = 0;
+        }
+    }
+
+    if (i) {
+        for (j = i; j < 3; j++)
+            char_array_3[j] = '\0';
+
+        char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+        char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+        char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+
+        for (j = 0; j < i + 1; j++)
+            ret += base64_chars[char_array_4[j]];
+
+        while (i++ < 3)
+            ret += '=';
+    }
+
+    return ret;
+}
+
+
+
+
 // Hàm escape JSON string
 std::string escapeJson(const std::string& input) {
     std::string output;
@@ -81,9 +138,8 @@ std::string escapeJson(const std::string& input) {
     return output;
 }
 
-// Hàm append text vào console HTML
+// Hàm append text vào console HTML với Base64
 void appendToConsole(const std::string& text, const std::string& type = "output") {
-    // Queue message thay vì gọi trực tiếp
     std::lock_guard<std::mutex> lock(g_queueMutex);
     g_messageQueue.push_back({text, type});
 }
@@ -98,7 +154,7 @@ void setStopButtonEnabled(bool enabled) {
     }
 }
 
-// Hàm xử lý message queue (gọi từ main thread)
+// Hàm xử lý message queue với Base64
 void processMessageQueue() {
     std::vector<ConsoleMessage> messages;
 
@@ -114,17 +170,18 @@ void processMessageQueue() {
                 g_webview->eval("document.getElementById('stopBtn').disabled = false;");
             } else if (msg.text == "__DISABLE_STOP__") {
                 g_webview->eval("document.getElementById('stopBtn').disabled = true;");
-            } else if (msg.type == "callback") {  // **THÊM PHẦN NÀY**
-                g_webview->eval(msg.text);  // Thực thi callback JS
+            } else if (msg.type == "callback") {
+                g_webview->eval(msg.text);
             } else {
-                std::string escaped = escapeJson(msg.text);
-                std::string js = "appendConsole(\"" + escaped + "\", \"" + msg.type + "\");";
+                // Encode text thành Base64
+                std::string encoded = base64_encode(msg.text);
+                // Gọi hàm JS với base64 encoded string
+                std::string js = "appendConsoleBase64(\"" + encoded + "\", \"" + msg.type + "\");";
                 g_webview->eval(js);
             }
         }
     }
 }
-
 // Hàm thực thi lệnh Windows và capture output
 void executeCommand(const std::string& command, const std::string& callbackId = "") {
     appendToConsole("=== Starting command execution ===", "info");
@@ -276,6 +333,134 @@ std::string readFile(const std::string &path) {
     return buffer.str();
 }
 
+void openFolder(const std::string& path) {
+    if (path.empty()) {
+        appendToConsole("Error: Empty path", "error");
+        return;
+    }
+
+    // Convert forward slashes to backslashes cho Windows
+    std::string winPath = path;
+    for (size_t i = 0; i < winPath.length(); i++) {
+        if (winPath[i] == '/') {
+            winPath[i] = '\\';
+        }
+    }
+
+    std::cout << "Opening path: " << winPath << std::endl;
+
+    // Mở folder với explorer
+    std::string command = "explorer.exe \"" + winPath + "\"";
+    int result = system(command.c_str());
+}
+
+std::string openFolderDialog() {
+    std::string selectedPath = "";
+
+    // Khởi tạo COM
+    HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+
+    // Sử dụng IFileDialog (modern, từ Vista trở lên)
+    IFileDialog* pfd = nullptr;
+    hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pfd));
+
+    if (SUCCEEDED(hr)) {
+        // Set options để chỉ chọn thư mục
+        DWORD dwOptions;
+        hr = pfd->GetOptions(&dwOptions);
+        if (SUCCEEDED(hr)) {
+            pfd->SetOptions(dwOptions | FOS_PICKFOLDERS);
+        }
+
+        // Set title
+        pfd->SetTitle(L"Chọn thư mục");
+
+        // Hiển thị dialog
+        hr = pfd->Show(NULL);
+
+        if (SUCCEEDED(hr)) {
+            IShellItem* psi;
+            hr = pfd->GetResult(&psi);
+
+            if (SUCCEEDED(hr)) {
+                PWSTR pszPath = nullptr;
+                hr = psi->GetDisplayName(SIGDN_FILESYSPATH, &pszPath);
+
+                if (SUCCEEDED(hr)) {
+                    // Convert wide string to string
+                    int size = WideCharToMultiByte(CP_UTF8, 0, pszPath, -1, nullptr, 0, nullptr, nullptr);
+                    if (size > 0) {
+                        std::vector<char> buffer(size);
+                        WideCharToMultiByte(CP_UTF8, 0, pszPath, -1, buffer.data(), size, nullptr, nullptr);
+                        selectedPath = std::string(buffer.data());
+                    }
+                    CoTaskMemFree(pszPath);
+                }
+                psi->Release();
+            }
+        }
+        pfd->Release();
+    }
+
+    CoUninitialize();
+    return selectedPath;
+}
+
+// Convert backslash thành forward slash cho JSON
+std::string normalizePathForJson(const std::string& path) {
+    std::string result = path;
+    for (size_t i = 0; i < result.length(); i++) {
+        if (result[i] == '\\') {
+            result[i] = '/';
+        }
+    }
+    return result;
+}
+
+// Escape string để trả về JSON an toàn
+std::string escapeJsonString(const std::string& str) {
+    std::string result;
+    for (char c : str) {
+        switch (c) {
+            case '"': result += "\\\""; break;
+            case '\\': result += "\\\\"; break;
+            case '\b': result += "\\b"; break;
+            case '\f': result += "\\f"; break;
+            case '\n': result += "\\n"; break;
+            case '\r': result += "\\r"; break;
+            case '\t': result += "\\t"; break;
+            default: result += c; break;
+        }
+    }
+    return result;
+}
+
+// Callback function cho bind - dùng C API
+void selectFolderCallback(const char* seq, const char* req, void* arg) {
+    webview_t w = (webview_t)arg;
+
+    std::string folderPath = openFolderDialog();
+    std::string result;
+
+    if (!folderPath.empty()) {
+        // Normalize path (convert \ thành /)
+        std::string normalizedPath = normalizePathForJson(folderPath);
+
+        // Build JSON response
+        std::ostringstream json;
+        json << "{\"success\": true, \"path\": \""
+             << escapeJsonString(normalizedPath)
+             << "\", \"originalPath\": \""
+             << escapeJsonString(folderPath) << "\"}";
+
+        result = json.str();
+    } else {
+        result = "{\"success\": false, \"path\": \"\", \"originalPath\": \"\"}";
+    }
+
+    // Return result to JavaScript
+    webview_return(w, seq, 0, result.c_str());
+}
 
 int main() {
     title();
@@ -328,7 +513,72 @@ int main() {
     g_webview = &w;  // <-- SET g_webview NGAY SAU KHI TẠO
 
     w.set_title("YouTube Downloader");
-    w.set_size(1600, 900, WEBVIEW_HINT_NONE);
+    w.set_size(1600, 900, WEBVIEW_HINT_FIXED);
+
+    w.bind("openFolder", [](std::string seq, std::string req, void* arg) {
+     auto w = static_cast<webview::webview*>(arg);
+
+     std::cout << "Raw request: " << req << std::endl;
+
+     std::string path;
+
+     // Parse JSON array: ["C:/path/to/folder"]
+     // Tìm chuỗi giữa dấu ngoặc kép đầu tiên
+     size_t firstQuote = req.find("\"");
+     if (firstQuote != std::string::npos) {
+         size_t secondQuote = req.find("\"", firstQuote + 1);
+         if (secondQuote != std::string::npos) {
+             path = req.substr(firstQuote + 1, secondQuote - firstQuote - 1);
+
+             // Unescape các ký tự đặc biệt từ JSON
+             std::string unescaped;
+             for (size_t i = 0; i < path.length(); i++) {
+                 if (path[i] == '\\' && i + 1 < path.length()) {
+                     char next = path[i + 1];
+                     if (next == '\\' || next == '/' || next == '"') {
+                         unescaped += next;
+                         i++; // Skip next character
+                         continue;
+                     }
+                 }
+                 unescaped += path[i];
+             }
+             path = unescaped;
+         }
+     }
+
+     std::cout << "Parsed path: " << path << std::endl;
+
+     if (!path.empty()) {
+         openFolder(path);
+         w->resolve(seq, 0, "true");
+     } else {
+         w->resolve(seq, 1, "\"Invalid path\"");
+         appendToConsole("Error: Cannot parse folder path from: " + req, "error");
+     }
+ }, &w);
+
+    w.bind("selectFolder", [](const std::string& args) -> std::string {
+        std::string folderPath = openFolderDialog();
+
+        if (!folderPath.empty()) {
+            std::string normalizedPath = normalizePathForJson(folderPath);
+
+            // Trả về plain object (webview sẽ tự serialize)
+            // Chỉ cần escape các ký tự đặc biệt trong string
+            std::ostringstream result;
+            result << "{"
+                   << "\"success\":true,"
+                   << "\"path\":\"" << escapeJsonString(normalizedPath) << "\","
+                   << "\"originalPath\":\"" << escapeJsonString(folderPath) << "\""
+                   << "}";
+            return result.str();
+        } else {
+            return "{\"success\":false,\"path\":\"\",\"originalPath\":\"\"}";
+        }
+    });
+
+
 
     // Bind callback từ JavaScript
     w.bind("runCommand", [](std::string jsonArgs) -> std::string {
@@ -385,6 +635,9 @@ int main() {
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
         }
     });
+
+
+
 
     w.navigate("http://localhost:8080");
 
