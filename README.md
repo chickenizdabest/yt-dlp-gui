@@ -7,7 +7,7 @@ Phát chán với việc sử dụng các trang web tải Video trực tuyến �
 YouTube Downloader cho bạn một giao diện trực quan, dễ dàng sử dụng yt-dlp mà không cần biết bất kì cú pháp lệnh nào! Tất cả các cú pháp lệnh tối ưu (chắc vậy :D) đã được viết sẵn, việc của bạn chỉ đơn giản là nhập liên kết, chọn chế độ và tải!
 
 ## 🛠️ Tính năng chính
-- Tải Video – Audio đa nền tảng (không chỉ YouTube mà còn hỗ trợ lên đến 1800  \[trang web được yt-dlp hỗ trợ](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md)  như Facebook, TikTok, Instagram,….).
+- Tải Video – Audio đa nền tảng (không chỉ YouTube mà còn hỗ trợ lên đến 1800 [trang web được yt-dlp hỗ trợ](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md)  như Facebook, TikTok, Instagram,….).
 
 - Giao diện trực quan, hiện đại, thao tác dễ dàng, đơn giản.
 <picture>
