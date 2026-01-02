@@ -37,10 +37,10 @@
                 <h1>Cấu hình tải xuống</h1>
                 <div class="directory">
                     <p class="title">Đường dẫn tải xuống hiện tại:</p>
-                    <input type="text" id="directory" class="directory" readonly value="C:\YTDownloader">
+                    <input type="text" id="directory" class="directory" readonly value="C:/YTDownloader">
                     <div class="directoryOption">
-                        <button class="btn"><i class="bi bi-folder2-open"></i><p>Mở thư mục lưu</p></button>
-                        <button class="btn"><i class="bi bi-folder-symlink"></i><p>Chọn nơi lưu khác</p></button>
+                        <button class="btn" onclick="callFolder()"><i class="bi bi-folder2-open"></i><p>Mở thư mục lưu</p></button>
+                        <button class="btn" onclick="pickFolder()"><i class="bi bi-folder-symlink"></i><p>Chọn nơi lưu khác</p></button>
                     </div>
                 </div>
                 <div class="downloadMode">
@@ -48,7 +48,7 @@
                     <div class="cards">
                         <label class="radio-card">
                             <svg xmlns="http://www.w3.org/2000/svg" width="5vw" height="5vw" class="bi bi-play-btn" viewBox="0 0 16 16"><path d="M6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814z"/><path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm15 0a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1z"/></svg>
-                            <input type="radio" id="small" name="font_size" value="small">
+                            <input type="radio" id="small" name="downloadMode" value="1">
                             <span class="radiomark"></span>
                             
                             <p class="downloadModeTitle">VIDEO</p>
@@ -56,7 +56,7 @@
                         </label>
                         <label class="radio-card">
                             <svg xmlns="http://www.w3.org/2000/svg" width="5vw" height="5vw" class="bi bi-file-music" viewBox="0 0 16 16"><path d="M10.304 3.13a1 1 0 0 1 1.196.98v1.8l-2.5.5v5.09c0 .495-.301.883-.662 1.123C7.974 12.866 7.499 13 7 13s-.974-.134-1.338-.377C5.302 12.383 5 11.995 5 11.5s.301-.883.662-1.123C6.026 10.134 6.501 10 7 10c.356 0 .7.068 1 .196V4.41a1 1 0 0 1 .804-.98z"/><path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1"/></svg>
-                            <input type="radio" id="small" name="font_size" value="small">
+                            <input type="radio" id="small" name="downloadMode" value="2">
                             <span class="radiomark"></span>
                             
                             <p class="downloadModeTitle">AUDIO</p>
@@ -66,8 +66,8 @@
                 </div>
                 <div class="process">
                     <div class="progressBar">
-                        <div class="progress" id="progress">
-                        </div>
+                        <br><br><br>
+
                     </div>
                         <button class="downloadBtn" id="downloadBtn">
                             <svg id='spinnerSVG' class='spinner' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">

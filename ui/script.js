@@ -5,36 +5,62 @@ function updateLinkPlatformOption() {
       youtube: /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//i,
       facebook: /^(https?:\/\/)?(www\.)?(facebook\.com|fb\.watch)\//i,
       tiktok: /^(https?:\/\/)?(www\.)?tiktok\.com\//i,
-      bilibili: /^(https?:\/\/)?(www\.)?bilibili\.com\//i
+      bilibili: /^(https?:\/\/)?(www\.)?bilibili\.com\//i,
+      youtube2: /youtu\.be\/([^?]+)/i
     };
     const url = document.getElementById("link").value.trim();
     if (patterns.youtube.test(url)) {
-    root.style.setProperty('--link-platform', '#ff0000');
-    root.style.setProperty('--link-platform-muted', '#ff0000');
-      document.getElementById("platformIcon").style.clipPath = "inset(0 0 0 0)";
-      document.getElementById("yt").style.opacity = "1";
+        root.style.setProperty('--link-platform', '#ff0000');
+        root.style.setProperty('--link-platform-muted', '#ff0000');
+        document.getElementById("platformIcon").style.clipPath = "inset(0 0 0 0)";
+        document.getElementById("gradientBorder").style.opacity = "0";
+        document.getElementById("yt").style.opacity = "1";
+        document.getElementById("fb").style.opacity = "0";
+        document.getElementById("tt").style.opacity = "0";
+        return 1;
     }
     else if (patterns.facebook.test(url)) {
-      root.style.setProperty('--link-platform', '#17A9FD');
-      root.style.setProperty('--link-platform-muted', '#17A9FD');
-      document.getElementById("platformIcon").style.clipPath = "inset(0 0 0 0)";
-      document.getElementById("fb").style.opacity = "1";
+        root.style.setProperty('--link-platform', '#17A9FD');
+        root.style.setProperty('--link-platform-muted', '#17A9FD');
+        document.getElementById("platformIcon").style.clipPath = "inset(0 0 0 0)";
+        document.getElementById("gradientBorder").style.opacity = "0";
+        document.getElementById("fb").style.opacity = "1";
+        document.getElementById("yt").style.opacity = "0";
+        document.getElementById("tt").style.opacity = "0";
+        return 2;
     }
     else if (patterns.tiktok.test(url)) {
-      root.style.setProperty('--link-platform', '#FE2C55');
-      root.style.setProperty('--link-platform-muted', '#FE2C55');
-      document.getElementById("gradientBorder").style.opacity = "1";
-      document.getElementById("platformIcon").style.clipPath = "inset(0 0 0 0)";
-      document.getElementById("tt").style.opacity = "1";
+        root.style.setProperty('--link-platform', '#FE2C55');
+        root.style.setProperty('--link-platform-muted', '#FE2C55');
+        document.getElementById("gradientBorder").style.opacity = "1";
+        document.getElementById("platformIcon").style.clipPath = "inset(0 0 0 0)";
+        document.getElementById("tt").style.opacity = "1";
+        document.getElementById("yt").style.opacity = "0";
+        document.getElementById("fb").style.opacity = "0";
+        return 3;
+    }
+    else if (patterns.bilibili.test(url)) {
+        return 4;
+    }
+    else if (patterns.youtube2.test(url)) {
+        root.style.setProperty('--link-platform', '#ff0000');
+        root.style.setProperty('--link-platform-muted', '#ff0000');
+        document.getElementById("platformIcon").style.clipPath = "inset(0 0 0 0)";
+        document.getElementById("gradientBorder").style.opacity = "0";
+        document.getElementById("yt").style.opacity = "1";
+        document.getElementById("fb").style.opacity = "0";
+        document.getElementById("tt").style.opacity = "0";
+        return 1;
     }
     else {
-      root.style.setProperty('--link-platform', 'oklch(0.76 0.1 224)');
-      root.style.setProperty('--link-platform-muted', 'oklch(0.4 0 224)');
-      document.getElementById("gradientBorder").style.opacity = "0";
-      document.getElementById("platformIcon").style.clipPath = "inset(0 0 0 100%)";
-      document.getElementById("yt").style.opacity = "0";
-      document.getElementById("fb").style.opacity = "0";
-      document.getElementById("tt").style.opacity = "0";
+        root.style.setProperty('--link-platform', 'oklch(0.76 0.1 224)');
+        root.style.setProperty('--link-platform-muted', 'oklch(0.4 0 224)');
+        document.getElementById("gradientBorder").style.opacity = "0";
+        document.getElementById("platformIcon").style.clipPath = "inset(0 0 0 100%)";
+        document.getElementById("yt").style.opacity = "0";
+        document.getElementById("fb").style.opacity = "0";
+        document.getElementById("tt").style.opacity = "0";
+        return 0;
     };
 }
 
@@ -80,6 +106,36 @@ window.__commandComplete = function(callbackId, exitCode) {
     }
 };
 
+function appendConsoleBase64(base64Text, type = 'output') {
+    // Decode base64
+    const text = decodeBase64(base64Text);
+    
+    const consoleEl = document.getElementById('console');
+    const line = document.createElement('div');
+    line.className = 'console-line console-' + type;
+    line.textContent = text;
+    consoleEl.appendChild(line);
+    consoleEl.scrollTop = consoleEl.scrollHeight;
+}
+
+function decodeBase64(base64) {
+    try {
+        // Decode base64 to binary string
+        const binaryString = atob(base64);
+        // Convert binary string to UTF-8
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+        }
+        // Decode UTF-8 bytes to string
+        return new TextDecoder('utf-8').decode(bytes);
+    } catch (e) {
+        console.error('Base64 decode error:', e);
+        return base64; // Fallback to original if decode fails
+    }
+}
+
+// Giữ nguyên hàm appendConsole cũ để tương thích
 function appendConsole(text, type = 'output') {
     const consoleEl = document.getElementById('console');
     const line = document.createElement('div');
@@ -104,7 +160,6 @@ async function stopProcess() {
 
 async function executeCmd() {
     const command = document.getElementById('commandInput').value.trim();
-    
     if (!command) {
         appendConsole('Lỗi: Vui lòng nhập lệnh', 'error');
         return;
@@ -118,14 +173,12 @@ async function executeCmd() {
         const exitCode = await new Promise((resolve) => {
             pendingCallbacks.set(callbackId, resolve);
         });
-        
         appendConsole(`Lệnh hoàn thành với exit code: ${exitCode}`, 'info');
         
         if (exitCode === 0) {
             appendConsole('Thành công!', 'info');
-        } else {
-            appendConsole('Có lỗi xảy ra (exit code: ' + exitCode + ')', 'error');
         }
+        
         return exitCode;
         
     } catch(e) {
@@ -133,11 +186,15 @@ async function executeCmd() {
         return -1;
     }
     
-    document.getElementById('commandInput').value = '';
 }
 
 document.getElementById('commandInput').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') executeCmd();
+  document.addEventListener('keydown', function (e) {
+    const isEnter = e.key === 'Enter' || e.keyCode === 13;
+    if (isEnter) {
+      e.preventDefault();
+    }
+  });
 });
 
 appendConsole('YouTube Downloader - chickenizdabest', 'info');
@@ -341,8 +398,8 @@ window.addEventListener('load', function() {
         await new Promise(resolve => setTimeout(resolve, 300));
         spinner.start();
         
-        // Bước 4: Đợi executeCmd hoàn thành
-        const exitCode = await executeCmd();
+        // Bước 4: Đợi Download hoàn thành
+        const exitCode = await startDownload();
         console.log('Execute completed with exit code:', exitCode);
         
         
@@ -365,9 +422,158 @@ window.addEventListener('load', function() {
         await new Promise(resolve => setTimeout(resolve, 500));
         btn.classList.remove('loading');
         btn.disabled = false;
+        document.getElementById('commandInput').value = '';
+        document.getElementById('executeBtn').disabled = false;
         
         // Bước 9: Fade in text
         await new Promise(resolve => setTimeout(resolve, 300));
         btnText.style.opacity = "1";
     });
 });
+
+async function callFolder() {
+    let folderPath = document.getElementById('directory').value;
+    if (!folderPath || folderPath.trim() === '') {
+        console.error('Invalid folder path');
+        return;
+    }
+    
+    // Trim whitespace
+    folderPath = folderPath.trim();
+    
+    console.log('Opening folder:', folderPath);
+    
+    try {
+        const result = await window.openFolder(folderPath);
+        console.log('Result:', result);
+    } catch (error) {
+        console.error('Error opening folder:', error);
+        alert('Cannot open folder: ' + folderPath + '\nError: ' + error);
+    }
+}
+async function pickFolder() {
+    try {
+        const data = await selectFolder();
+        
+        console.log('Data:', data);
+        console.log('Data type:', typeof data);
+        
+        if (data.success) {            
+            console.log('Selected folder:', data.path);
+            console.log('Original path:', data.originalPath);
+            document.getElementById('directory').value = data.path;
+        } else {
+            alert('Không thể chọn thư mục. Vui lòng thử lại.');
+            document.getElementById('directory').value = "C:/YTDownloader";
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Lỗi: ' + error.message);
+    }
+}
+
+function mergeCommand(url, directory, platform, mode) {
+    if (platform === 1) {
+        trimmedUrl = trimmingUrl(url);
+        if (mode === 1) {
+            return "C:/YTDownloader/yt-dlp.exe -f bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]/bv*+ba/b --merge-output-format mp4 --no-playlist --newline --concurrent-fragments 5 --cookies cookies.txt " + url + " -P " + directory;
+        }
+        else if (mode === 2) {
+            return "C:/YTDownloader/yt-dlp.exe --extract-audio --audio-format mp3 --audio-quality 0 --embed-thumbnail --embed-metadata --no-playlist --newline --concurrent-fragments 5 --cookies cookies.txt " + url + " -P " + directory;
+        }
+        else {
+            return "echo [X.X]: Invalid mode for YouTube";
+        }
+    }
+    else if (platform === 2) {
+        if (mode === 1) {
+            return "C:/YTDownloader/yt-dlp.exe -f best[ext=mp4]/best --merge-output-format mp4 --no-playlist --newline --concurrent-fragments 5 --cookies cookies.txt --add-metadata " + url + " -P " + directory;
+        }
+        else if (mode === 2) {
+            return "C:/YTDownloader/yt-dlp.exe --extract-audio --audio-format mp3 --audio-quality 0 --embed-thumbnail --embed-metadata --no-playlist --newline --cookies cookies.txt " + url + " -P " + directory;
+        }
+        else {
+            return "echo [X.X]: Invalid mode for Facebook";
+        }
+    }
+    else if (platform === 3) {
+        if (mode === 1) {
+            return "C:/YTDownloader/yt-dlp.exe -f best[ext=mp4]/best --merge-output-format mp4 --no-playlist --newline --cookies cookies.txt --add-metadata " + url + " -P " + directory;
+        }
+        else if (mode === 2) {
+            return "C:/YTDownloader/yt-dlp.exe --extract-audio --audio-format mp3 --audio-quality 0 --embed-thumbnail --embed-metadata --no-playlist --newline --cookies cookies.txt " + url + " -P " + directory;
+        }
+        else {
+            return "echo [X.X]: Invalid mode for TikTok";
+        }       
+    }
+    else if (platform === 4) {
+        if (mode === 1) {
+            return "C:/YTDownloader/yt-dlp.exe -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best --merge-output-format mp4 --no-playlist --newline --concurrent-fragments 8 --cookies cookies.txt --add-metadata --write-subs --sub-langs \"zh-Hans,en\" --embed-subs " + url + " -P " + directory;
+        }
+        else if (mode === 2) {
+            return "C:/YTDownloader/yt-dlp.exe --extract-audio --audio-format mp3 --audio-quality 0 --embed-thumbnail --embed-metadata --no-playlist --newline --concurrent-fragments 5 --cookies cookies.txt " + url + " -P " + directory;
+        }
+        else {
+            return "echo [X.X]: Invalid mode for Bilibili";
+        }
+    }
+    else {
+        if (mode === 1) {
+            return "C:/YTDownloader/yt-dlp.exe -f bv*[ext=mp4]+ba[ext=m4a]/best[ext=mp4]/best --merge-output-format mp4 --no-playlist --newline --cookies cookies.txt --add-metadata " + url + " -P " + directory;
+        }
+        else if (mode === 2) {
+            return "C:/YTDownloader/yt-dlp.exe --extract-audio --audio-format mp3 --audio-quality 0 --embed-thumbnail --embed-metadata --no-playlist --newline --cookies cookies.txt " + url + " -P " + directory;
+        }
+        else {
+            return "echo [X.X]: Invalid mode for Unknown Platform";
+        }
+    }
+}
+
+function trimmingUrl(url) {
+    let videoId = "";
+
+    const match1 = url.match(/v=([^&]+)/);
+    if (match1) {
+        videoId = match1[1];
+    }
+
+    const match2 = url.match(/youtu\.be\/([^?]+)/);
+    if (match2) {
+        videoId = match2[1];
+    }
+
+    if (!videoId) {
+        alert("Tính năng xem trước chỉ hỗ trợ Video Youtube! Vui lòng kiểm tra lại đường dẫn!");
+        return;
+    }
+
+    const trimmedUrl = `https://www.youtube.com/watch?v=${videoId}`;
+    return trimmedUrl;
+}
+
+
+
+async function startDownload() {
+    document.getElementById('executeBtn').disabled = true;
+    const url = document.getElementById('link').value.trim();
+    const directory = document.getElementById('directory').value.trim();
+    const platform = updateLinkPlatformOption();
+    const mode = parseInt(document.querySelector('input[name="downloadMode"]:checked').value);
+    if (!url) {
+        alert('Lỗi: Vui lòng nhập đường dẫn video.');
+        return;
+    }
+    else if (!mode || (mode !== 1 && mode !== 2)) {
+        alert('Lỗi: Vui lòng chọn chế độ tải xuống!');
+        return;
+    }
+    else {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        const command = mergeCommand(url, directory, platform, mode);
+        document.getElementById('commandInput').value = command;
+        return await executeCmd();
+    }
+
+}

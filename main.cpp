@@ -513,7 +513,7 @@ int main() {
     g_webview = &w;  // <-- SET g_webview NGAY SAU KHI TẠO
 
     w.set_title("YouTube Downloader");
-    w.set_size(1600, 900, WEBVIEW_HINT_FIXED);
+    w.set_size(1600, 900, WEBVIEW_HINT_NONE);
 
     w.bind("openFolder", [](std::string seq, std::string req, void* arg) {
      auto w = static_cast<webview::webview*>(arg);

@@ -471,7 +471,7 @@ p,h1 {
             font-weight: bold;
 }
 .console-output {
-            color: #d4d4d4;
+            color: var(--text-muted);
 }
 .console-error {
             color: #f48771;
@@ -534,6 +534,12 @@ p,h1 {
 #executeBtn {
     background-color: var(--execute);
     border-color: var(--execute);
+    transition: var(--transition);
+}
+#executeBtn:disabled {
+    background-color: var(--border-muted);
+    border-color: var(--border-muted);
+    cursor: default;
     transition: var(--transition);
 }
 #stopBtn {
