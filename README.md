@@ -57,7 +57,7 @@ Vậy là xong rồi, mở lên và tận hưởng thôi :D
 
 Phần mềm đã được thử nghiệm để chạy tốt trên Windows 10 và Windows 11 với màn hình độ phân giải 1920×1080 (Full HD)
 
-Với một số máy có màn hình độ phân giải thấp (1600×900, 1280×720,…) thì giao diện có thể sẽ không hiển thị đúng. Khi đó mấy ní vui lòng dùng tổ hợp Ctrl + Mũi tên xuống (hoặc Ctrl + Lăn chuột xuống) để giao diện có thể thu nhỏ vừa với màn hình nhaa :D
+Với một số máy có màn hình độ phân giải thấp (1600×900, 1280×720,…) thì giao diện có thể sẽ không hiển thị đúng. Khi đó mấy ní vui lòng dùng tổ hợp Ctrl + Dấu trừ \[-\] (hoặc Ctrl + Lăn chuột xuống) để giao diện có thể thu nhỏ vừa với màn hình nhaa :D
 
 Phần mềm được làm ra bởi 1 con gà nên nếu có lỗi gì thì có thể báo với t qua phần Comment để t biết đường sửa nha mấy ní :D
 
