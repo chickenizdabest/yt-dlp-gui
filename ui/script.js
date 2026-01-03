@@ -1,3 +1,5 @@
+
+// Hàm animation cho ô nhập link
 function updateLinkPlatformOption() {
     console.log("Dang kiem tra link");
     const root = document.documentElement;
@@ -66,6 +68,8 @@ function updateLinkPlatformOption() {
 
 document.getElementById("link").addEventListener("input", updateLinkPlatformOption);
 
+// Hàm load video xem trước (Tạm thời bỏ vì lười)
+/*
 function loadVideo() {
     const url = document.getElementById("link").value.trim();
     let videoId = "";
@@ -88,16 +92,27 @@ function loadVideo() {
     const embedUrl = `https://www.youtube.com/embed/${videoId}`;
     document.getElementById("ytFrame").src = embedUrl;
 }
+*/
 
+// Ngăn chặn nhấn Enter trong ô link để tránh mở đường dẫn lưu
 document.getElementById("link").addEventListener("keydown", function(event) {
     if (event.key === "Enter") {
         event.preventDefault();
-        loadVideo();
     }
 });
 
+// Bắt sự kiện nhấn Enter trong ô lệnh để thực thi lệnh + Fix lỗi nhấn Enter bị mở đường dẫn lưu
+document.getElementById("commandInput").addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        executeCmd();
+    }
+});
+
+// Bản đồ lưu trữ các callback đang chờ
 const pendingCallbacks = new Map();
 
+// Hàm được gọi khi lệnh hoàn thành
 window.__commandComplete = function(callbackId, exitCode) {
     const callback = pendingCallbacks.get(callbackId);
     if (callback) {
@@ -106,6 +121,17 @@ window.__commandComplete = function(callbackId, exitCode) {
     }
 };
 
+// Hàm thêm dòng vào bảng điều khiển
+function appendConsole(text, type = 'output') {
+    const consoleEl = document.getElementById('console');
+    const line = document.createElement('div');
+    line.className = 'console-line console-' + type;
+    line.textContent = text;
+    consoleEl.appendChild(line);
+    consoleEl.scrollTop = consoleEl.scrollHeight;
+}
+
+// Hàm thêm dòng base64 đã giải mã vào bảng điều khiển
 function appendConsoleBase64(base64Text, type = 'output') {
     // Decode base64
     const text = decodeBase64(base64Text);
@@ -118,6 +144,7 @@ function appendConsoleBase64(base64Text, type = 'output') {
     consoleEl.scrollTop = consoleEl.scrollHeight;
 }
 
+// Hàm giải mã base64
 function decodeBase64(base64) {
     try {
         // Decode base64 to binary string
@@ -135,21 +162,13 @@ function decodeBase64(base64) {
     }
 }
 
-// Giữ nguyên hàm appendConsole cũ để tương thích
-function appendConsole(text, type = 'output') {
-    const consoleEl = document.getElementById('console');
-    const line = document.createElement('div');
-    line.className = 'console-line console-' + type;
-    line.textContent = text;
-    consoleEl.appendChild(line);
-    consoleEl.scrollTop = consoleEl.scrollHeight;
-}
-
+// Hàm xoá bảng điều khiển
 function clearConsole() {
     document.getElementById('console').innerHTML = '';
     appendConsole('Đã xoá sạch bảng điều khiển.', 'info');
 }
 
+// Hàm dừng quá trình hiện tại
 async function stopProcess() {
     try {
         await stopCurrentProcess();
@@ -158,10 +177,13 @@ async function stopProcess() {
     }
 }
 
+// Hàm thực thi lệnh
 async function executeCmd() {
     const command = document.getElementById('commandInput').value.trim();
+    document.getElementById('executeBtn').disabled = true;
     if (!command) {
         appendConsole('Lỗi: Vui lòng nhập lệnh', 'error');
+        document.getElementById('executeBtn').disabled = false;
         return;
     }
     
@@ -174,32 +196,29 @@ async function executeCmd() {
             pendingCallbacks.set(callbackId, resolve);
         });
         appendConsole(`Lệnh hoàn thành với exit code: ${exitCode}`, 'info');
-        
+        document.getElementById('executeBtn').disabled = false;
         if (exitCode === 0) {
             appendConsole('Thành công!', 'info');
         }
-        
         return exitCode;
         
     } catch(e) {
         appendConsole('Có lỗi: ' + e.toString(), 'error');
+        document.getElementById('executeBtn').disabled = false;
         return -1;
     }
-    
 }
 
-document.getElementById('commandInput').addEventListener('keypress', function(e) {
-  document.addEventListener('keydown', function (e) {
-    const isEnter = e.key === 'Enter' || e.keyCode === 13;
-    if (isEnter) {
-      e.preventDefault();
-    }
-  });
-});
-
+// Thông báo khởi động
 appendConsole('YouTube Downloader - chickenizdabest', 'info');
-appendConsole('Nhập lệnh ở bên dưới và nhấn Enter để thực thi.', 'info');
+appendConsole('Nhập liên kết vào ô bên trên, chọn nơi lưu, chế độ tải xuống và nhấn tải xuống nha :>', 'info');
+appendConsole('LƯU Ý CỰC MẠNH: KHÔNG CHỌN NƠI LƯU CÓ TÊN CHỨA KHOẢNG TRẮNG (DẤU CÁCH)', 'info');
 
+// Spinner SVG Animation bởi Neil Pullman - được sửa lại 1 xíu
+/**
+ * Copyright (c) 2015 Neil Pullman
+ * Licensed under the MIT license
+ */
 window.addEventListener('load', function() {
     var Spinner = function (el) {
         this.svg = el;
@@ -302,7 +321,7 @@ window.addEventListener('load', function() {
         this.timelineEnd = 0;
         this.direction = 0;
         
-        // Reset SVG opacity
+        // Reset độ trong suốt SVG
         this.svg.style.opacity = '1';
         TweenMax.set(this.svg, { scale: 1 });
         
@@ -389,12 +408,12 @@ window.addEventListener('load', function() {
         await new Promise(resolve => setTimeout(resolve, 150));
         btnText.style.opacity = "0";
         
-        // Bước 2: Add class loading
+        // Bước 2: Thêm class loading
         await new Promise(resolve => setTimeout(resolve, 300));
         btn.classList.add('loading');
         btn.disabled = true;
         
-        // Bước 3: Start spinner
+        // Bước 3: Bắt đầu spinner
         await new Promise(resolve => setTimeout(resolve, 300));
         spinner.start();
         
@@ -406,7 +425,6 @@ window.addEventListener('load', function() {
         await new Promise(resolve => setTimeout(resolve, 300));
         // Bước 5: Gọi finish
         spinner.finish();
-        
         
         // Bước 6: Đợi 3 giây (checkmark hiện)
         await new Promise(resolve => setTimeout(resolve, 3000));
@@ -431,14 +449,14 @@ window.addEventListener('load', function() {
     });
 });
 
+// Mở thư mục lưu trữ
 async function callFolder() {
     let folderPath = document.getElementById('directory').value;
     if (!folderPath || folderPath.trim() === '') {
         console.error('Invalid folder path');
         return;
     }
-    
-    // Trim whitespace
+
     folderPath = folderPath.trim();
     
     console.log('Opening folder:', folderPath);
@@ -451,6 +469,8 @@ async function callFolder() {
         alert('Cannot open folder: ' + folderPath + '\nError: ' + error);
     }
 }
+
+// Chọn thư mục lưu trữ
 async function pickFolder() {
     try {
         const data = await selectFolder();
@@ -472,6 +492,7 @@ async function pickFolder() {
     }
 }
 
+// Hàm hợp nhất lệnh dựa trên nền tảng và chế độ tải xuống
 function mergeCommand(url, directory, platform, mode) {
     if (platform === 1) {
         trimmedUrl = trimmingUrl(url);
@@ -531,6 +552,7 @@ function mergeCommand(url, directory, platform, mode) {
     }
 }
 
+// Hàm cắt gọn URL YouTube (do chưa cần làm tính năng tải playlist :D. Có thể t sẽ thêm sau)
 function trimmingUrl(url) {
     let videoId = "";
 
@@ -553,27 +575,75 @@ function trimmingUrl(url) {
     return trimmedUrl;
 }
 
-
-
+// Bắt đầu quá trình tải xuống
 async function startDownload() {
-    document.getElementById('executeBtn').disabled = true;
-    const url = document.getElementById('link').value.trim();
-    const directory = document.getElementById('directory').value.trim();
-    const platform = updateLinkPlatformOption();
-    const mode = parseInt(document.querySelector('input[name="downloadMode"]:checked').value);
-    if (!url) {
+    if (document.getElementById('link').value.trim() === '') {
         alert('Lỗi: Vui lòng nhập đường dẫn video.');
         return;
-    }
-    else if (!mode || (mode !== 1 && mode !== 2)) {
+    } else if (document.querySelector('input[name="downloadMode"]:checked') === null) {
         alert('Lỗi: Vui lòng chọn chế độ tải xuống!');
         return;
+    } else {
+        document.getElementById('executeBtn').disabled = true;
+        const url = document.getElementById('link').value.trim();
+        const directory = document.getElementById('directory').value.trim();
+        const platform = updateLinkPlatformOption();
+        const mode = parseInt(document.querySelector('input[name="downloadMode"]:checked').value);
+        if (!url) {
+            alert('Lỗi: Vui lòng nhập đường dẫn video.');
+            return;
+        }
+        else if (!mode || (mode !== 1 && mode !== 2)) {
+            alert('Lỗi: Vui lòng chọn chế độ tải xuống!');
+            return;
+        }
+        else {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            const command = mergeCommand(url, directory, platform, mode);
+            document.getElementById('commandInput').value = command;
+            return await executeCmd();
+        }
     }
-    else {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        const command = mergeCommand(url, directory, platform, mode);
-        document.getElementById('commandInput').value = command;
-        return await executeCmd();
-    }
-
 }
+
+// Chuyển đổi giao diện sáng/tối
+const html = document.documentElement;
+const themeBtn = document.getElementById("light-dark");
+
+// Cập nhật biểu tượng theo giao diện hiện tại
+function updateIcons() {
+  if (html.classList.contains("light")) {
+    document.getElementById("sunIcon").style.display = "none";   // đang ở light → ẩn mặt trời
+    document.getElementById("moonIcon").style.display = "inline"; // hiện mặt trăng để chuyển sang dark
+  } else {
+    document.getElementById("sunIcon").style.display = "inline"; // đang ở dark → hiện mặt trời để chuyển sang light
+    document.getElementById("moonIcon").style.display = "none";
+  }
+}
+
+// Cập nhật biểu tượng ban đầu
+updateIcons();
+
+// Khi load trang, tự nhận diện theo OS
+if (window.matchMedia("(prefers-color-scheme: light)").matches) {
+    html.classList.add("light");
+    updateIcons();
+}
+
+// Toggle khi bấm nút
+themeBtn.addEventListener("click", () => {
+    html.classList.toggle("light");
+    updateIcons();
+});
+
+// Lắng nghe thay đổi từ OS (tự động cập nhật)
+window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", e => {
+    if (e.matches) {
+        html.classList.add("light");
+        updateIcons();
+    } else {
+        html.classList.remove("light");
+        updateIcons();
+    }
+});
+

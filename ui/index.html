@@ -8,13 +8,16 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
-    <title>TestUI</title>
+    <title>YouTube Downloader</title>
     <link rel="icon" href="favicon.ico">
 </head>
 <body>
-    
     <div class="nav">
         <img src="bannercpp.png" height=100%>
+        <button class="light-dark" id="light-dark">
+            <i class="bi bi-moon-fill" id="moonIcon"></i>
+            <i class="bi bi-sun-fill" id="sunIcon"></i>
+        </button>
     </div>
     <form onsubmit="return false;">
         <div class="link-wrapper">
@@ -50,7 +53,6 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="5vw" height="5vw" class="bi bi-play-btn" viewBox="0 0 16 16"><path d="M6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814z"/><path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm15 0a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1z"/></svg>
                             <input type="radio" id="small" name="downloadMode" value="1">
                             <span class="radiomark"></span>
-                            
                             <p class="downloadModeTitle">VIDEO</p>
                             <p class="downloadModeDescription">Tải xuống Video (.mp4)</p>
                         </label>
@@ -58,17 +60,12 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="5vw" height="5vw" class="bi bi-file-music" viewBox="0 0 16 16"><path d="M10.304 3.13a1 1 0 0 1 1.196.98v1.8l-2.5.5v5.09c0 .495-.301.883-.662 1.123C7.974 12.866 7.499 13 7 13s-.974-.134-1.338-.377C5.302 12.383 5 11.995 5 11.5s.301-.883.662-1.123C6.026 10.134 6.501 10 7 10c.356 0 .7.068 1 .196V4.41a1 1 0 0 1 .804-.98z"/><path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1"/></svg>
                             <input type="radio" id="small" name="downloadMode" value="2">
                             <span class="radiomark"></span>
-                            
                             <p class="downloadModeTitle">AUDIO</p>
                             <p class="downloadModeDescription">Tải xuống Audio (.mp3)</p>
                         </label>
                     </div>
                 </div>
                 <div class="process">
-                    <div class="progressBar">
-                        <br><br><br>
-
-                    </div>
                         <button class="downloadBtn" id="downloadBtn">
                             <svg id='spinnerSVG' class='spinner' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
                                 <polygon id='polygon'/>
@@ -76,15 +73,15 @@
                             </svg>
                             <span class="btn-text" id="btn-text"><i class="bi bi-download"></i> Tải xuống</span>
                         </button>
-                        
                 </div>
             </div>
             <div class="rightColumn">
-                <div class="wrapper-preview">
+                <!-- Tính năng xem trước Video (Tạm thời bỏ do lười) -->
+                <!-- <div class="wrapper-preview">
                     <p class="title">Xem trước Video</p>
                     <iframe id="ytFrame" width="100%" height="80%" src="https://www.youtube.com/embed/nzcM5fahhUc?list=RDnzcM5fahhUc" title="Mirror Replica" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                     <p class="rightComment">Tính năng chỉ hỗ trợ Video Youtube</p>
-                </div>
+                </div> -->
                 <div class="console">
                     <h1>Bảng điều khiển</h1>
                     <div class="wrapper-console">
@@ -107,6 +104,5 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.3/TweenMax.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
     <script src="script.js"></script>
-
 </body>
 </html>
