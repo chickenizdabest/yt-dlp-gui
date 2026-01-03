@@ -41,8 +41,6 @@ void title() {
     std::cout << "=========================================================================================\n";
 }
 
-
-
 // Global webview pointer để có thể gọi từ thread khác
 webview::webview* g_webview = nullptr;
 std::mutex g_mutex;
@@ -109,9 +107,6 @@ std::string base64_encode(const std::string& input) {
 
     return ret;
 }
-
-
-
 
 // Hàm escape JSON string
 std::string escapeJson(const std::string& input) {
