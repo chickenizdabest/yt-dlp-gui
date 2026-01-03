@@ -482,9 +482,13 @@ async function pickFolder() {
             console.log('Selected folder:', data.path);
             console.log('Original path:', data.originalPath);
             document.getElementById('directory').value = data.path;
+            if (document.getElementById('directory').value.includes(" ")) {
+                alert('Vui lòng không chọn thư mục có tên chứa khoảng trắng (dấu cách). Vui lòng thử lại.');
+                document.getElementById('directory').value = "C:/YTDownloader/Downloads";
+            }
         } else {
             alert('Không thể chọn thư mục. Vui lòng thử lại.');
-            document.getElementById('directory').value = "C:/YTDownloader";
+            document.getElementById('directory').value = "C:/YTDownloader/Downloads";
         }
     } catch (error) {
         console.error('Error:', error);
