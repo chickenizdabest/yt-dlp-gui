@@ -31,9 +31,7 @@ _v.d. C:/Users/Ga Ran/Desktop -> Phần mềm sẽ nhận là C:/Users/Ga (mặc
 ## 🔧 Hướng dẫn cài đặt
 Hiện tại phần mềm chỉ hỗ trợ Windows (hỗ trợ cho các phiên bản khác sẽ được t làm sau nếu rảnh :D)
 
-**Bước 1:**  Tải xuống File cài đặt mới nhất tại mục [Release](https://github.com/chickenizdabest/yt-dlp-gui/releases/) hoặc tại đây:
-
-[YouTube Downloader C++ - 1.0 - Setup](https://czteam-my.sharepoint.com/:u:/g/personal/lightgems\_czteam\_onmicrosoft\_com/IQCAmt3ZyLO0Q5t3lT4JZ2IaAadlG\_b1wJ-0i45QATFxCYk?e=sZsenv)
+**Bước 1:**  Tải xuống File cài đặt mới nhất tại mục [Release](https://github.com/chickenizdabest/yt-dlp-gui/releases/)
 
 **Bước 2:**  Nếu trình duyệt của mấy thím kêu File có thể gây nguy hại cho máy thì cứ yên tâm mà chọn Keep đi, không có Virus đâu :D (mấy thím có thể tự check trên VirusTotal nếu muốn)
 
@@ -53,6 +51,16 @@ Hiện tại phần mềm chỉ hỗ trợ Windows (hỗ trợ cho các phiên b
 
 Vậy là xong rồi, mở lên và tận hưởng thôi :D
 
+## ⚙️ Cập nhật
+
+Do t lười nên chưa tìm hiểu cách làm tự động cập nhật nên mấy ní chịu khó cập nhật bằng tay nha. Cập nhật theo các bước sau đây nha:
+
+**Bước 1**: Gỡ cài đặt phiên bản cũ:
+ - Mở Settings -> Apps -> Installed apps
+ - Tìm YouTube Downloader và nhấn Uninstall
+ - (hoặc có thể Search Add or remove programs trong thanh tìm kiếm -> Tìm YouTube Downloader và nhấn Uninstall)
+
+**Bước 2**: Tải bộ cài đặt phiên bản mới nhất ở mục [Release](https://github.com/chickenizdabest/yt-dlp-gui/releases/) và cài đặt :D 
 ## ℹ️ Chú thích
 
 Phần mềm đã được thử nghiệm để chạy tốt trên Windows 10 và Windows 11 với màn hình độ phân giải 1920×1080 (Full HD)

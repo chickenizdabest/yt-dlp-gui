@@ -87,7 +87,14 @@ input:focus {
     outline: none;
 }
 
-p,h1 {
+h1 {
+    font-size: 3.5vh;
+    user-select: none;
+    transition: var(--transition);
+}
+
+p {
+    font-size: 2vh;
     user-select: none;
     transition: var(--transition);
 }
@@ -97,7 +104,7 @@ p,h1 {
     display: flex;
     margin-left: 5vw;
     background-color: var(--bg-dark);
-    height: 14vh;
+    height: 12vh;
     width: 90vw;
     margin-top: 2vh;
     margin-bottom: 2vh;
@@ -227,7 +234,7 @@ p,h1 {
     display: flex;
     margin-left: 5vw;
     width: 90vw;
-    height: 68vh;
+    height: 70vh;
     margin-bottom: 1vh;
 }
 .leftColumn {
@@ -512,7 +519,7 @@ p,h1 {
             flex-direction: column;
             background: var(--console);
             width: 100%;
-            height: 50vh;
+            height: 52vh;
 }
 #console {
             flex: 1;
