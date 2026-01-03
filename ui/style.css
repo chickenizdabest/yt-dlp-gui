@@ -99,6 +99,9 @@ p {
     transition: var(--transition);
 }
 
+.btn p {
+    font-size: 1.5vh;
+}
 
 .nav{
     display: flex;
