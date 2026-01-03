@@ -67,9 +67,11 @@ Phần mềm được làm ra bởi 1 con gà nên nếu có lỗi gì thì có 
 
 - Cộng đồng  **FFmpeg Developers**  vì dự án  [**FFmpeg**](https://ffmpeg.org/).
 
+- Các tác giả và người đóng góp của thư viện [**webview**](https://github.com/webview/webview) đã giúp t có thể viết được ra giao diện cho phần mềm trên nền Web.
+
 - [junkfood](https://github.com/JunkFood02) và các nhà phát triển của [**Seal**](https://github.com/JunkFood02/Seal) vì Seal là ý tưởng chính để t viết nên phần mềm này.
 
--   [**neiltron**](https://github.com/neiltron/polygon-spinner/commits?author=neiltron) vì đã tạo ra [**Polygon Spinner**](https://github.com/neiltron/polygon-spinner) trông xịn vcl
+- [**neiltron**](https://github.com/neiltron/polygon-spinner/commits?author=neiltron) vì đã tạo ra [**Polygon Spinner**](https://github.com/neiltron/polygon-spinner) trông xịn vcl
 
 ## ℹ️ Có thể bạn sẽ cần :D
 
