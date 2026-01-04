@@ -502,6 +502,9 @@ void selectFolderCallback(const char* seq, const char* req, void* arg) {
 
 int main() {
     title();
+    // Ẩn console ngay khi chạy
+    HWND hWnd = GetConsoleWindow();
+    ShowWindow(hWnd, SW_HIDE);
     httplib::Server server;
 
     // Route: trả về nội dung index.html
