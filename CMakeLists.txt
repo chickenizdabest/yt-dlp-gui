@@ -22,15 +22,17 @@ FetchContent_MakeAvailable(webview)
 FetchContent_Declare(
         httplib
         GIT_REPOSITORY https://github.com/yhirose/cpp-httplib.git
-        GIT_TAG v0.15.3
+        GIT_TAG v0.15.3  # hoặc bản mới hơn
 )
 FetchContent_MakeAvailable(httplib)
 
 if (WIN32)
-    set(WIN_ICON appicon.rc main.cpp)
+    set(WIN_RC appicon.rc version.rc)
 endif()
 
-add_executable(CPP_GUI main.cpp ${WIN_ICON} main.cpp)
+add_executable(CPP_GUI main.cpp ${WIN_RC}
+        main.cpp)
+
 
 target_link_libraries(CPP_GUI PRIVATE webview::core_static)
 target_link_libraries(CPP_GUI PRIVATE httplib::httplib)
