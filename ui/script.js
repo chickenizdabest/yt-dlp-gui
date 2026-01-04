@@ -181,22 +181,31 @@ async function stopProcess() {
 async function executeCmd() {
     const command = document.getElementById('commandInput').value.trim();
     document.getElementById('executeBtn').disabled = true;
+    
     if (!command) {
         appendConsole('Lỗi: Vui lòng nhập lệnh', 'error');
         document.getElementById('executeBtn').disabled = false;
         return;
     }
     
+    // Encode command sang Base64
+    const encodedCommand = btoa(unescape(encodeURIComponent(command)));
     const callbackId = 'cmd_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     
+    console.log('Original command:', command);
+    console.log('Encoded command:', encodedCommand);
+    
     try {
-        await runCommand(command, callbackId);
+        // Gửi encoded command thay vì command gốc
+        await runCommand(encodedCommand, callbackId);
         
         const exitCode = await new Promise((resolve) => {
             pendingCallbacks.set(callbackId, resolve);
         });
+        
         appendConsole(`Lệnh hoàn thành với exit code: ${exitCode}`, 'info');
         document.getElementById('executeBtn').disabled = false;
+        
         if (exitCode === 0) {
             appendConsole('Thành công!', 'info');
         }
@@ -211,8 +220,8 @@ async function executeCmd() {
 
 // Thông báo khởi động
 appendConsole('YouTube Downloader - chickenizdabest', 'info');
-appendConsole('Nhập liên kết vào ô bên trên, chọn nơi lưu, chế độ tải xuống và nhấn tải xuống nha :>', 'info');
-appendConsole('LƯU Ý CỰC MẠNH: KHÔNG CHỌN NƠI LƯU CÓ TÊN CHỨA KHOẢNG TRẮNG (DẤU CÁCH)', 'info');
+appendConsole('Nhập liên kết vào ô bên trên, chọn nơi lưu, chế độ tải xuống và nhấn tải xuống nhaa', 'info');
+appendConsole('Nếu không biết Video tải xuống đã lưu về đâu thì nhấn nút Mở thư mục lưu ở cột bên trái nhaa :D')
 
 // Spinner SVG Animation bởi Neil Pullman - được sửa lại 1 xíu
 /**
@@ -482,10 +491,6 @@ async function pickFolder() {
             console.log('Selected folder:', data.path);
             console.log('Original path:', data.originalPath);
             document.getElementById('directory').value = data.path;
-            if (document.getElementById('directory').value.includes(" ")) {
-                alert('Vui lòng không chọn thư mục có tên chứa khoảng trắng (dấu cách). Vui lòng thử lại.');
-                document.getElementById('directory').value = "C:/YTDownloader/Downloads";
-            }
         } else {
             alert('Không thể chọn thư mục. Vui lòng thử lại.');
             document.getElementById('directory').value = "C:/YTDownloader/Downloads";
@@ -499,12 +504,11 @@ async function pickFolder() {
 // Hàm hợp nhất lệnh dựa trên nền tảng và chế độ tải xuống
 function mergeCommand(url, directory, platform, mode) {
     if (platform === 1) {
-        trimmedUrl = trimmingUrl(url);
         if (mode === 1) {
-            return "C:/YTDownloader/yt-dlp.exe -f bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]/bv*+ba/b --merge-output-format mp4 --no-playlist --newline --concurrent-fragments 5 --cookies cookies.txt " + url + " -P " + directory;
+            return "C:/YTDownloader/yt-dlp.exe -f bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]/bv*+ba/b --merge-output-format mp4 --no-playlist --newline --concurrent-fragments 5 --cookies cookies.txt \"" + url + "\" -P \"" + directory + "\"";
         }
         else if (mode === 2) {
-            return "C:/YTDownloader/yt-dlp.exe --extract-audio --audio-format mp3 --audio-quality 0 --embed-thumbnail --embed-metadata --no-playlist --newline --concurrent-fragments 5 --cookies cookies.txt " + url + " -P " + directory;
+            return "C:/YTDownloader/yt-dlp.exe --extract-audio --audio-format mp3 --audio-quality 0 --embed-thumbnail --embed-metadata --no-playlist --newline --concurrent-fragments 5 --cookies cookies.txt \"" + url + "\" -P \"" + directory + "\"";
         }
         else {
             return "echo [X.X]: Invalid mode for YouTube";
@@ -512,10 +516,10 @@ function mergeCommand(url, directory, platform, mode) {
     }
     else if (platform === 2) {
         if (mode === 1) {
-            return "C:/YTDownloader/yt-dlp.exe -f best[ext=mp4]/best --merge-output-format mp4 --no-playlist --newline --concurrent-fragments 5 --cookies cookies.txt --add-metadata " + url + " -P " + directory;
+            return "C:/YTDownloader/yt-dlp.exe -f best[ext=mp4]/best --merge-output-format mp4 --no-playlist --newline --concurrent-fragments 5 --cookies cookies.txt --add-metadata \"" + url + "\" -P \"" + directory + "\"";
         }
         else if (mode === 2) {
-            return "C:/YTDownloader/yt-dlp.exe --extract-audio --audio-format mp3 --audio-quality 0 --embed-thumbnail --embed-metadata --no-playlist --newline --cookies cookies.txt " + url + " -P " + directory;
+            return "C:/YTDownloader/yt-dlp.exe --extract-audio --audio-format mp3 --audio-quality 0 --embed-thumbnail --embed-metadata --no-playlist --newline --cookies cookies.txt \"" + url + "\" -P \"" + directory + "\"";
         }
         else {
             return "echo [X.X]: Invalid mode for Facebook";
@@ -523,10 +527,10 @@ function mergeCommand(url, directory, platform, mode) {
     }
     else if (platform === 3) {
         if (mode === 1) {
-            return "C:/YTDownloader/yt-dlp.exe -f best[ext=mp4]/best --merge-output-format mp4 --no-playlist --newline --cookies cookies.txt --add-metadata " + url + " -P " + directory;
+            return "C:/YTDownloader/yt-dlp.exe -f best[ext=mp4]/best --merge-output-format mp4 --no-playlist --newline --cookies cookies.txt --add-metadata \"" + url + "\" -P \"" + directory + "\"";
         }
         else if (mode === 2) {
-            return "C:/YTDownloader/yt-dlp.exe --extract-audio --audio-format mp3 --audio-quality 0 --embed-thumbnail --embed-metadata --no-playlist --newline --cookies cookies.txt " + url + " -P " + directory;
+            return "C:/YTDownloader/yt-dlp.exe --extract-audio --audio-format mp3 --audio-quality 0 --embed-thumbnail --embed-metadata --no-playlist --newline --cookies cookies.txt \"" + url + "\" -P \"" + directory + "\"";
         }
         else {
             return "echo [X.X]: Invalid mode for TikTok";
@@ -534,10 +538,10 @@ function mergeCommand(url, directory, platform, mode) {
     }
     else if (platform === 4) {
         if (mode === 1) {
-            return "C:/YTDownloader/yt-dlp.exe -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best --merge-output-format mp4 --no-playlist --newline --concurrent-fragments 8 --cookies cookies.txt --add-metadata --write-subs --sub-langs \"zh-Hans,en\" --embed-subs " + url + " -P " + directory;
+            return "C:/YTDownloader/yt-dlp.exe -f bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best --merge-output-format mp4 --no-playlist --newline --concurrent-fragments 8 --cookies cookies.txt --add-metadata --write-subs --sub-langs \"zh-Hans,en\" --embed-subs \"" + url + "\" -P \"" + directory + "\"";
         }
         else if (mode === 2) {
-            return "C:/YTDownloader/yt-dlp.exe --extract-audio --audio-format mp3 --audio-quality 0 --embed-thumbnail --embed-metadata --no-playlist --newline --concurrent-fragments 5 --cookies cookies.txt " + url + " -P " + directory;
+            return "C:/YTDownloader/yt-dlp.exe --extract-audio --audio-format mp3 --audio-quality 0 --embed-thumbnail --embed-metadata --no-playlist --newline --concurrent-fragments 5 --cookies cookies.txt \"" + url + "\" -P \"" + directory + "\"";
         }
         else {
             return "echo [X.X]: Invalid mode for Bilibili";
@@ -545,38 +549,15 @@ function mergeCommand(url, directory, platform, mode) {
     }
     else {
         if (mode === 1) {
-            return "C:/YTDownloader/yt-dlp.exe -f bv*[ext=mp4]+ba[ext=m4a]/best[ext=mp4]/best --merge-output-format mp4 --no-playlist --newline --cookies cookies.txt --add-metadata " + url + " -P " + directory;
+            return "C:/YTDownloader/yt-dlp.exe -f bv*[ext=mp4]+ba[ext=m4a]/best[ext=mp4]/best --merge-output-format mp4 --no-playlist --newline --cookies cookies.txt --add-metadata \"" + url + "\" -P \"" + directory + "\"";
         }
         else if (mode === 2) {
-            return "C:/YTDownloader/yt-dlp.exe --extract-audio --audio-format mp3 --audio-quality 0 --embed-thumbnail --embed-metadata --no-playlist --newline --cookies cookies.txt " + url + " -P " + directory;
+            return "C:/YTDownloader/yt-dlp.exe --extract-audio --audio-format mp3 --audio-quality 0 --embed-thumbnail --embed-metadata --no-playlist --newline --cookies cookies.txt \"" + url + "\" -P \"" + directory + "\"";
         }
         else {
             return "echo [X.X]: Invalid mode for Unknown Platform";
         }
     }
-}
-
-// Hàm cắt gọn URL YouTube (do chưa cần làm tính năng tải playlist :D. Có thể t sẽ thêm sau)
-function trimmingUrl(url) {
-    let videoId = "";
-
-    const match1 = url.match(/v=([^&]+)/);
-    if (match1) {
-        videoId = match1[1];
-    }
-
-    const match2 = url.match(/youtu\.be\/([^?]+)/);
-    if (match2) {
-        videoId = match2[1];
-    }
-
-    if (!videoId) {
-        alert("Tính năng xem trước chỉ hỗ trợ Video Youtube! Vui lòng kiểm tra lại đường dẫn!");
-        return;
-    }
-
-    const trimmedUrl = `https://www.youtube.com/watch?v=${videoId}`;
-    return trimmedUrl;
 }
 
 // Bắt đầu quá trình tải xuống

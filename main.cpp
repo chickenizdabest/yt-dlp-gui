@@ -108,6 +108,49 @@ std::string base64_encode(const std::string& input) {
     return ret;
 }
 
+// Hàm decode Base64
+std::string base64_decode(const std::string& encoded_string) {
+    int in_len = encoded_string.size();
+    int i = 0;
+    int j = 0;
+    int in_ = 0;
+    unsigned char char_array_4[4], char_array_3[3];
+    std::string ret;
+
+    while (in_len-- && (encoded_string[in_] != '=') &&
+           (isalnum(encoded_string[in_]) || (encoded_string[in_] == '+') || (encoded_string[in_] == '/'))) {
+        char_array_4[i++] = encoded_string[in_]; in_++;
+        if (i == 4) {
+            for (i = 0; i < 4; i++)
+                char_array_4[i] = base64_chars.find(char_array_4[i]);
+
+            char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+            char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+            char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
+
+            for (i = 0; i < 3; i++)
+                ret += char_array_3[i];
+            i = 0;
+        }
+           }
+
+    if (i) {
+        for (j = i; j < 4; j++)
+            char_array_4[j] = 0;
+
+        for (j = 0; j < 4; j++)
+            char_array_4[j] = base64_chars.find(char_array_4[j]);
+
+        char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+        char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+        char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
+
+        for (j = 0; j < i - 1; j++) ret += char_array_3[j];
+    }
+
+    return ret;
+}
+
 // Hàm escape JSON string
 std::string escapeJson(const std::string& input) {
     std::string output;
@@ -573,19 +616,16 @@ int main() {
         }
     });
 
-
-
-    // Bind callback từ JavaScript
     w.bind("runCommand", [](std::string jsonArgs) -> std::string {
-    std::string command;
+    std::string encodedCommand;
     std::string callbackId;
 
-    // Parse JSON để lấy command và callbackId
+    // Parse JSON để lấy encodedCommand và callbackId
     size_t start = jsonArgs.find("\"");
     if (start != std::string::npos) {
         size_t end = jsonArgs.find("\"", start + 1);
         if (end != std::string::npos) {
-            command = jsonArgs.substr(start + 1, end - start - 1);
+            encodedCommand = jsonArgs.substr(start + 1, end - start - 1);
 
             // Tìm callbackId (tham số thứ 2)
             start = jsonArgs.find("\"", end + 1);
@@ -598,10 +638,15 @@ int main() {
         }
     }
 
-    if (command.empty()) {
+    if (encodedCommand.empty()) {
         appendToConsole("Error: Cannot parse command", "error");
         return "{\"status\":\"error\"}";
     }
+
+    // Decode Base64 để lấy command gốc
+    std::string command = base64_decode(encodedCommand);
+
+    appendToConsole("Decoded command: " + command, "info");
 
     std::thread([command, callbackId]() {
         executeCommand(command, callbackId);
