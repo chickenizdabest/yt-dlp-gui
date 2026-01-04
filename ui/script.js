@@ -220,8 +220,8 @@ async function executeCmd() {
 
 // Thông báo khởi động
 appendConsole('YouTube Downloader - chickenizdabest', 'info');
-appendConsole('Nhập liên kết vào ô bên trên, chọn nơi lưu, chế độ tải xuống và nhấn tải xuống nhaa', 'info');
-appendConsole('Nếu không biết Video tải xuống đã lưu về đâu thì nhấn nút Mở thư mục lưu ở cột bên trái nhaa :D')
+appendConsole('Nhập liên kết vào ô bên trên, chọn nơi lưu, chế độ tải xuống và nhấn tải xuống', 'info');
+appendConsole('Nếu không biết Video tải xuống đã lưu về đâu thì nhấn nút "Mở thư mục lưu" ở cột bên trái nhaa :D')
 
 // Spinner SVG Animation bởi Neil Pullman - được sửa lại 1 xíu
 /**

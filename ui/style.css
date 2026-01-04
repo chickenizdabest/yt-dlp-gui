@@ -25,8 +25,8 @@
 
 :root {
     --bg-dark: oklch(0.2329 0.0104 244.59);
-    --bg: oklch(0.15 0 224);
-    --bg-light: oklch(0.2 0 224);
+    --bg: oklch(0.15 0.005 246);
+    --bg-light: oklch(0.2 0.005 246);
     --text: oklch(0.96 0 224);
     --text-muted: oklch(0.76 0 224);
     --highlight: oklch(0.5 0 224);
@@ -38,7 +38,7 @@
     --warning: oklch(0.7 0.05 100);
     --success: oklch(0.7 0.05 160);
     --info: oklch(0.7 0.05 260);
-    --border-column: solid 0.2vh var(--border); 
+    --border-column: solid 0.05vh var(--border); 
     --link-platform: oklch(0.76 0.1 224);
     --link-platform-muted: oklch(0.4 0 224);
     --transition: all 0.3s ease;
@@ -46,24 +46,27 @@
     --stop: oklch(0.6513 0.2168 30);
     --clear: oklch(0.8383 0.1092 88.13);
     --console: oklch(0.235 0 0);
+    --shadow: 0px 2px 2px oklch(0 0 0 / 0.2), 0px 4px 4px oklch(0 0 0 / 0.1);
+    --gradient: linear-gradient(0deg, var(--bg) 97%, var(--bg-light));
+    --polyline: oklch(0.96 0 224);
 }
 
 :root.light {
-    --bg-dark: oklch(0.6424 0.0104 244.59);
-    --bg: oklch(0.8056 0.0049 244.59);
-    --bg-light: oklch(0.8739 0.0049 244.59);
-    --text: oklch(0.2567 0.0049 244.59);
-    --text-muted: oklch(0.3487 0.0049 244.59);
-    --highlight: oklch(1 0 0);
-    --border: oklch(0.9882 0.0049 244.59);
-    --border-muted: oklch(0.8709 0.0049 244.59);
+    --bg-dark: oklch(0.92 0.005 246);
+    --bg: oklch(0.96 0.005 246);
+    --bg-light: oklch(1 0.005 246);
+    --text: oklch(0.15 0.01 246);
+    --text-muted: oklch(0.4 0.01 246);
+    --highlight: oklch(1 0.01 246);
+    --border: oklch(0.6 0.01 246);
+    --border-muted: oklch(0.7 0.01 246);
     --primary: oklch(0.76 0.1 224);
     --secondary: oklch(0.76 0.1 44);
     --danger: oklch(0.7 0.05 30);
     --warning: oklch(0.7 0.05 100);
     --success: oklch(0.7 0.05 160);
     --info: oklch(0.7 0.05 260);
-    --border-column: solid 0.2vh var(--border); 
+    --border-column: solid 0.05vh var(--bg); 
     --link-platform: oklch(0.76 0.1 224);
     --link-platform-muted: oklch(0.9882 0.0049 244.59);
     --transition: all 0.3s ease;
@@ -71,6 +74,10 @@
     --stop: oklch(0.6513 0.2168 30);
     --clear: oklch(0.8383 0.1092 88.13);
     --console: oklch(0.927 0.0039 244.59);
+    --shadow: 0px 2px 2px oklch(0 0 0 / 0.2), 0px 4px 4px oklch(0 0 0 / 0.1);
+    --shadow-inset: 0px 2px 2px oklch(0 0 0 / 0.2) inset, 0px 4px 4px oklch(0 0 0 / 0.1) inset;
+    --gradient: linear-gradient(0deg, var(--bg) 97%, var(--bg-light));
+    --polyline: oklch(0.6 0.01 246);
 }
 
 body {
@@ -209,7 +216,7 @@ p {
 
 .btn {
     font-family: ganh;
-    background-color: var(--bg-light);
+    background: var(--gradient);
     border: var(--border-column);
     border-radius: 4vh;
     width: 12vw;
@@ -219,13 +226,20 @@ p {
     justify-content: center;
     align-items: center;
     transition: var(--transition);
+    box-shadow: var(--shadow);
 }
 
 .btn:hover {
-    background-color: var(--primary);
+    background: var(--primary);
     color: var(--bg-dark);
     border-color: var(--primary);
     cursor: pointer;
+    transition: var(--transition);
+    box-shadow: none;
+}
+
+.btn:active {
+    box-shadow: var(--shadow-inset);
     transition: var(--transition);
 }
 
@@ -242,7 +256,7 @@ p {
 }
 .leftColumn {
     position: relative;
-    background-color: var(--bg);
+    background: var(--gradient);
     width: 30vw;
     margin-right: 1vw;
     border: var(--border-column);
@@ -250,6 +264,7 @@ p {
     border-top-color: var(--highlight);
     padding-left: 2vw;
     padding-right: 2vw;
+    box-shadow: var(--shadow);
 }
 .downloadModeTitle {
     font-weight: bold;
@@ -279,6 +294,8 @@ p {
     padding-top: 1.5vh;
     border-radius: 10%;
     transition: var(--transition);
+    background: var(--gradient);
+    box-shadow: var(--shadow);
 }
 
 .radio-card svg {
@@ -290,6 +307,7 @@ p {
     border-color: var(--primary);
     transition: var(--transition);
     background-color: var(--bg-light);
+    box-shadow: var(--shadow-inset);
 }
 
 .radio-card:has(input:checked) svg {
@@ -369,7 +387,7 @@ p {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: var(--bg-light);
+    background: var(--gradient);
     border: var(--border-column);
     border-radius: 40px;
     width: 200px;
@@ -378,12 +396,10 @@ p {
     position: relative;
     font-family: ganh;
     color: var(--text);
-    transition: var(--transition);
-    font-size: 0.9vw;
     overflow: hidden;
-    position: relative;
     font-size: 16px;
     cursor: pointer;
+    box-shadow: var(--shadow);
 }
 
 .downloadBtn:not(:disabled):hover {
@@ -451,19 +467,19 @@ p {
         }
 
 .downloadBtn svg polygon {
-            stroke: #ffffff;
+            stroke: var(--polyline);
             fill: transparent;
             stroke-width: 2;
         }
 
 .downloadBtn svg polyline {
-            stroke: #ffffff;
+            stroke: var(--polyline);
             stroke-width: 3;
             fill: none;
         }
 
 .rightColumn {
-    background-color: var(--bg);
+    background: var(--gradient);
     width: 59vw;
     border: var(--border-column);
     border-radius: 4vh;
@@ -471,6 +487,7 @@ p {
     display: flex;
     flex-direction: column;
     align-items: center;
+    box-shadow: var(--shadow);
 }
 .title {
     color: var(--text);
@@ -523,6 +540,7 @@ p {
             background: var(--console);
             width: 100%;
             height: 52vh;
+            box-shadow: var(--shadow-inset);
 }
 #console {
             flex: 1;
@@ -614,8 +632,8 @@ p {
     cursor: pointer;
 }
 .button-group button i {
-    font-size: large;
-    color: var(--text);
+    font-size: 2vh;
+    color: #ffffff;
 }
 #executeBtn {
     background-color: var(--execute);
@@ -668,7 +686,7 @@ p {
 }
 
 .light-dark {
-    background: var(--bg);
+    background: var(--gradient);
     border: var(--border-column);
     cursor: pointer;
     font-size: 2vh;
@@ -681,10 +699,17 @@ p {
     height: 8vh;
     width: 8vh;
     transition: var(--transition);
+    box-shadow: var(--shadow);
 }
 
 .light-dark:hover {
+    box-shadow: none;
     border-color: var(--primary);
     transition: var(--transition);
     color: var(--primary);
+}
+
+.light-dark:active {
+    box-shadow: var(--shadow-inset);
+    transition: var(--transition);
 }
