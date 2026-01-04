@@ -30,9 +30,8 @@ if (WIN32)
     set(WIN_ICON appicon.rc main.cpp)
 endif()
 
-add_executable(CPP_GUI main.cpp ${WIN_ICON}
-        main.cpp)
-
+add_executable(CPP_GUI main.cpp ${WIN_ICON} main.cpp)
+set_target_properties(CPP_GUI PROPERTIES WIN32_EXECUTABLE TRUE)
 
 target_link_libraries(CPP_GUI PRIVATE webview::core_static)
 target_link_libraries(CPP_GUI PRIVATE httplib::httplib)

@@ -199,6 +199,7 @@ p {
     transform: translate(-2.5vh, 2.5vh);
     opacity: 0;
     transition: var(--transition);
+    color: white;
 }
 
 .directory {
