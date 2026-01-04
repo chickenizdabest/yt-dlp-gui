@@ -11,7 +11,8 @@ YouTube Downloader cho bạn một giao diện trực quan, dễ dàng sử dụ
 
 - Giao diện trực quan, hiện đại, thao tác dễ dàng, đơn giản.
 <picture>
-  <img alt="Giao diện của YouTube Downloader" src="https://chickenizdabest.wordpress.com/wp-content/uploads/2026/01/yt-dlp.png?w=1024">
+  <img alt="Giao diện sáng của YouTube Downloader" src="https://chickenizdabest.wordpress.com/wp-content/uploads/2026/01/screenshot-2026-01-04-203135.png?strip=info&w=1602">
+  <img alt="Giao diện tối của YouTube Downloader" src="https://chickenizdabest.wordpress.com/wp-content/uploads/2026/01/screenshot-2026-01-04-203122.png?strip=info&w=1602">
 </picture>
 
 
@@ -21,15 +22,12 @@ YouTube Downloader cho bạn một giao diện trực quan, dễ dàng sử dụ
 
 **Bước 2:**  Thay đổi Đường dẫn tải xuống (nơi lưu) nếu muốn.
 
-**LƯU Ý CỰC MẠNH: KHÔNG CHỌN NƠI LƯU CÓ TÊN CHỨA KHOẢNG TRẮNG (DẤU CÁCH) VÌ CÓ THỂ LÀM ĐƯỜNG DẪN TẢI XUỐNG SAI**
-_v.d. C:/Users/Ga Ran/Desktop -> Phần mềm sẽ nhận là C:/Users/Ga (mặc dù vẫn hiện đúng tại mục Đường dẫn tải xuống hiện tại)_
-
 **Bước 3:**  Chọn Chế độ tải xuống (Video – Audio)
 
 **Bước 4:**  Nhấn Tải xuống và chờ cho quá trình tải xuống hoàn tất
 
 ## 🔧 Hướng dẫn cài đặt
-Hiện tại phần mềm chỉ hỗ trợ Windows (hỗ trợ cho các phiên bản khác sẽ được t làm sau nếu rảnh :D)
+Hiện tại phần mềm chỉ hỗ trợ Windows (hỗ trợ cho các hệ điều hành khác sẽ được t làm sau nếu rảnh :D)
 
 **Bước 1:**  Tải xuống File cài đặt mới nhất tại mục [Release](https://github.com/chickenizdabest/yt-dlp-gui/releases/)
 
@@ -63,9 +61,7 @@ Do t lười nên chưa tìm hiểu cách làm tự động cập nhật nên m�
 **Bước 2**: Tải bộ cài đặt phiên bản mới nhất ở mục [Release](https://github.com/chickenizdabest/yt-dlp-gui/releases/) và cài đặt :D 
 ## ℹ️ Chú thích
 
-Phần mềm đã được thử nghiệm để chạy tốt trên Windows 10 và Windows 11 với màn hình độ phân giải 1920×1080 (Full HD)
-
-Với một số máy có màn hình độ phân giải thấp (1600×900, 1280×720,…) thì giao diện có thể sẽ không hiển thị đúng. Khi đó mấy ní vui lòng dùng tổ hợp Ctrl + Dấu trừ \[-\] (hoặc Ctrl + Lăn chuột xuống) để giao diện có thể thu nhỏ vừa với màn hình nhaa :D
+Phần mềm đã được thử nghiệm để chạy tốt trên Windows 10 và Windows 11.
 
 Phần mềm được làm ra bởi 1 con gà nên nếu có lỗi gì thì có thể báo với t qua phần Comment để t biết đường sửa nha mấy ní :D
 
